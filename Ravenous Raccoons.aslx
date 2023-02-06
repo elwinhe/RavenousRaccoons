@@ -817,7 +817,10 @@
     <attr name="grid_fill">Transparent</attr>
     <attr name="grid_border">Transparent</attr>
     <implementation_notes />
-    <description><![CDATA[littered metal scrap scattered around you<br/>Rows of barrels with unknown content (radioactive waste)<br/>A dilapilated trash compactor, with compacted trash inside.<br/>A conveyor belt leading to a broken down incinerator, with junk laying around<br/><br/>interactions:<br/>interacting with the trash compactor can open up the ceiling due to the massive apparatus jamming up.<br/>Rows of barrels is the ending where Rocco gets the mutation powers to get the ice cream<br/>the key unlocks the barrels or something<br/>Puzzle in the safe found falling out of the ceiling presents a puzzle where Rocco needs to find 3 distinct items within the three rooms (junkyard, car stack, and recycling plant)<br/>some ideas ^ (engraved skull in the metal scrap found in the junkyard, radiation symbol on the barrel, and the star found on the pickup truck.)<br/>]]></description>
+    <description>This place looks like it has been blown up by a tornado, with junk littered everywhere. Some objects seems valuable for Casey, so it's worth a look around. Rocco has a strong feeling that he can find something valuable that can be traded with ice cream.</description>
+    <enter type="script">
+      picture ("recycling plant.png")
+    </enter>
     <exit alias="south" to="GuardDogBase">
       <inherit name="southdirection" />
     </exit>
@@ -826,23 +829,138 @@
     </exit>
     <object name="metalscrap">
       <inherit name="editor_object" />
-      <alias>metal scrap</alias>
+      <alias>metal rod</alias>
+      <look>Varied sizes of metal scrap scattered all around the plant. Mishappen and jagged, Rocco thinks they might be helpful if he can avoid cutting himself. </look>
+      <feature_usegive />
+      <take />
+      <takemsg>Rocco finds a metal scrap in the shape of a rod</takemsg>
+      <use />
+      <usemenuprompt type="string"></usemenuprompt>
+      <selfuseon type="scriptdictionary">
+        <item key="trashcompactor">
+          UnlockExit (trashcompactor)
+          msg ("Rocco uses the metal rod as a lever to operate the trash compactor")
+        </item>
+      </selfuseon>
+      <visible />
     </object>
     <object name="ceiling">
       <inherit name="editor_object" />
       <alias>ceiling</alias>
+      <look>The ceiling seems like it's going to cave in any moment. Looks like it has been supporting something heavy for a long time...</look>
+      <displayverbs type="stringlist">
+        <value>Look at</value>
+      </displayverbs>
     </object>
-    <object name="radioactivewaste">
+    <object name="steelbarrels">
       <inherit name="editor_object" />
-      <alias>radioactive waste</alias>
+      <inherit name="container_closed" />
+      <inherit name="container_lockable" />
+      <alias>Steel Barrels</alias>
+      <look>Large barrels stacked in rows, contents are unknown. There must be something that can be used to open it.</look>
+      <displayverbs type="stringlist">
+        <value>Look at</value>
+        <value>open</value>
+      </displayverbs>
+      <feature_container />
+      <close type="boolean">false</close>
+      <openmsg>Yellowish-green oozes out, it looks like it might hold mysterious powers.</openmsg>
+      <keycount type="int">1</keycount>
+      <autounlock type="boolean">false</autounlock>
+      <autoopen type="boolean">false</autoopen>
+      <visible />
+      <nokeymessage>Rocco's tiny paws isn't strong enough to open this barrel.</nokeymessage>
+      <unlockmessage>The barrel can now be opened</unlockmessage>
+      <listchildren />
+      <onopen type="script">
+        MakeObjectVisible
+      </onopen>
+      <object name="Glowing juice">
+        <inherit name="editor_object" />
+        <inherit name="edible" />
+        <visible type="boolean">false</visible>
+        <feature_edible />
+        <attr name="feature_startscript" type="boolean">false</attr>
+        <attr name="feature_usegive" type="boolean">false</attr>
+      </object>
     </object>
     <object name="trashcompactor">
       <inherit name="editor_object" />
+      <inherit name="switchable" />
+      <inherit name="container_open" />
+      <inherit name="container_lockable" />
       <alias>trash compactor</alias>
+      <look>Half open trash compactor looks like it can still be operated, however, the lever is missing.</look>
+      <feature_container />
+      <attr name="feature_switchable" type="boolean">false</attr>
+      <switchonmsg>Trash Compactor starts to rumble and shake</switchonmsg>
+      <cannotswitchon>Trash Compactor cannot be turned on, requires a lever to operate</cannotswitchon>
+      <isopen type="boolean">false</isopen>
+      <close type="boolean">false</close>
+      <keycount type="int">1</keycount>
+      <autounlock type="boolean">false</autounlock>
+      <autoopen />
+      <nokeymessage>Cannot operate the Trash Compactor...</nokeymessage>
+      <unlockmessage>Rocco inserts the metal rod into the trash compactor, allowing it to be used as a lever to operate the old machine.</unlockmessage>
+      <openmsg>Rocco opens up the trash compactor, causing it to rumble and shake... Something seems to be breaking through the ceiling. After a moment, a large metal box falls from the ceiling, making a loud thud as it smashes into the ground.</openmsg>
+      <key type="object">metalscrap</key>
+      <displayverbs type="stringlist">
+        <value>Look at</value>
+        <value>Take</value>
+        <value>open</value>
+      </displayverbs>
+      <onopen type="script">
+        MakeObjectVisible (Metal Safe)
+      </onopen>
+      <lockmessage>Locked.</lockmessage>
     </object>
     <object name="incinerator">
       <inherit name="editor_object" />
+      <inherit name="container_open" />
+      <inherit name="switchable" />
       <alias>incinerator</alias>
+      <look>A large metal chute towers through the ceiling of the warehouse. An opening allows rocco to climb inside.</look>
+      <displayverbs type="stringlist">
+        <value>Look at</value>
+        <value>Enter</value>
+      </displayverbs>
+      <attr name="feature_container" type="boolean">false</attr>
+      <open type="boolean">false</open>
+      <close type="boolean">false</close>
+      <contentsprefix type="string"></contentsprefix>
+      <openmsg>Too dark for rocco to see what's inside</openmsg>
+      <attr name="feature_switchable" type="boolean">false</attr>
+      <switchedon type="boolean">false</switchedon>
+      <cannotswitchon>Trash Compactor cannot be turned on, it is missing a lever</cannotswitchon>
+      <switchonmsg>Trash Compactor starts to rumble and shake</switchonmsg>
+    </object>
+    <object name="Metal Safe">
+      <inherit name="editor_object" />
+      <inherit name="container_closed" />
+      <inherit name="container_lockable" />
+      <visible type="boolean">false</visible>
+      <displayverbs type="stringlist">
+        <value>Look at</value>
+      </displayverbs>
+      <look>This old safe looks sturdy and has a lock on it that requires a combination code.</look>
+      <feature_container />
+      <close type="boolean">false</close>
+      <openmsg>Rocco turns the wheel on the safe, and it creaks open</openmsg>
+      <onopen type="script">
+        MakeObjectVisible (gold bar)
+        MakeObjectVisible (crowbar)
+      </onopen>
+      <keycount type="int">3</keycount>
+      <key type="object">Bottle</key>
+      <autounlock type="boolean">false</autounlock>
+      <object name="crowbar">
+        <inherit name="editor_object" />
+        <visible type="boolean">false</visible>
+      </object>
+      <object name="gold bar">
+        <inherit name="editor_object" />
+        <visible type="boolean">false</visible>
+      </object>
     </object>
   </object>
   <object name="CarGraveyard">
